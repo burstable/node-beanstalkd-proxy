@@ -1,0 +1,20 @@
+server:
+  build: .
+  links:
+   - beanstalkd_a
+   - beanstalkd_b
+   - beanstalkd_c
+  volumes:
+    - .:/src
+
+beanstalkd_a:
+  image: schickling/beanstalkd
+  command: beanstalkd -p 11300 -z 5000000
+
+beanstalkd_b:
+  image: schickling/beanstalkd
+  command: beanstalkd -p 11300 -z 5000000
+
+beanstalkd_c:
+  image: schickling/beanstalkd
+  command: beanstalkd -p 11300 -z 5000000

@@ -1,0 +1,51 @@
+{
+  "name": "beanstalkd-proxy",
+  "version": "0.0.1",
+  "description": "Protocol aware beanstalkd proxy in node for sharding, authentication usecases.",
+  "main": "lib/index.js",
+  "options": {
+    "mocha": "--require scripts/mocha-bootload --check-leaks --colors --reporter spec"
+  },
+  "scripts": {
+    "prepublish": "npm run check && npm run build",
+    "check": "npm run lint && npm run test:unit",
+    "lint": "eslint src",
+    "build": "rm -rf lib/* && babel src -d lib",
+    "cover": "NODE_ENV=test istanbul cover _mocha -- $npm_package_options_mocha test/unit/*.test.js test/unit/**/*.test.js",
+    "test": "npm run test-unit && npm run test-integration",
+    "test:unit": "NODE_ENV=test mocha $npm_package_options_mocha test/unit/*.test.js test/unit/**/*.test.js",
+    "test:integration": "docker-compose run --rm server /bin/sh -c \"npm run test:integration:raw\"",
+    "test:integration:ci": "docker-compose run server /bin/sh -c \"npm run test:integration:raw\"",
+    "test:integration:raw": "NODE_ENV=test mocha $npm_package_options_mocha test/integration/*.test.js test/integration/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burstable/node-beanstalkd-proxy.git"
+  },
+  "keywords": [
+    "beanstalkd",
+    "proxy"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/burstable/node-beanstalkd-proxy/issues"
+  },
+  "homepage": "https://github.com/burstable/node-beanstalkd-proxy#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-preset-node6": "^11.0.0",
+    "babel-register": "^6.18.0",
+    "beanstalkd": "^1.0.5",
+    "eslint": "^3.12.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "publish": "^0.6.0",
+    "sinon": "^1.17.6",
+    "unexpected": "^10.21.0",
+    "unexpected-sinon": "^10.5.1"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.7"
+  }
+}
