@@ -39,6 +39,30 @@ describe('basic / single upstream', function () {
     });
   });
 
+  it('chains multiple proxies', function () {
+    let tube = Math.random().toString();
+    let proxyB = new BeanstalkdProxy('localhost:11300');
+    let proxyC = new BeanstalkdProxy('localhost:11301');
+    let client = new BeanstalkdClient('localhost', 11302);
+
+    return Promise.join(
+      proxyB.listen(11301),
+      proxyC.listen(11302)
+    ).then(function () {
+      return client.connect();
+    }).then(function () {
+      return client.use(tube).then(() => {
+        return expect(client.listTubeUsed(), 'to be fulfilled with', tube);
+      });
+    }).finally(function () {
+      return Promise.join(
+        proxyB.close(),
+        proxyC.close(),
+        client.quit()
+      );
+    });
+  });
+
   it('handles bad upstream', function () {
     const proxy = new BeanstalkdProxy(`${process.env.BEANSTALKD_A_PORT_11300_TCP_ADDR}:9999`);
     const client = new BeanstalkdClient('localhost', 11301);
